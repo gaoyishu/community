@@ -4,6 +4,7 @@ import life.hk.community.dto.AccessTokenDTO;
 import life.hk.community.dto.GithubUser;
 import life.hk.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,17 @@ public class AuthorizeController {
     @Autowired
     private GithubProvider githubProvider;
 
+    @Value("${github.client.id}")
+    private String  clientId;
+
+    @Value("${github.client.secret}")
+    private String  clientSecret;
+
+    @Value("${github.redirect.uri}")
+    private String  redirectUri;
+
+
+
 
     // map to callback
     @GetMapping("/callback")
@@ -26,10 +38,10 @@ public class AuthorizeController {
                            @RequestParam(name = "state") String state){
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
-        accessTokenDTO.setRedirect_uri("http://localhost:8887/callback");
-        accessTokenDTO.setClient_id("8783a9933b655279fe38");
+        accessTokenDTO.setRedirect_uri(redirectUri);
+        accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setState(state);
-        accessTokenDTO.setClient_secret("46a8add93427fc5100468c81425d0b9dde11014b");
+        accessTokenDTO.setClient_secret(clientSecret);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser user = githubProvider.getUser(accessToken);
         System.out.println(user.getName());
