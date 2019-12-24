@@ -12,9 +12,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface PublishMapper {
 
-    @Insert("insert into publish (title,description,gmt_create,gmt_modified,creator,tag) " +
-            "values (#(title),#(description),#(gmtCreate),#(gmtModified),#(creator),#(tag)) " )
-    public void create(Publish publish);
+    @Insert("insert into publish (title,description,gmt_create,gmt_modified,creator,tag) values (#{title},#{description},#{gmtCreate},#{gmtModified},#{creator},#{tag})" )
+    void create(Publish publish);
 
 
 }
