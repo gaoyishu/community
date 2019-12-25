@@ -7,6 +7,7 @@ create table USER
 	gmt_modified bigint,
 	bio varchar(256),
 	name varchar(50),
+	avatar_url varchar(100),
 	constraint USER_pk
 		primary key (id)
 );
