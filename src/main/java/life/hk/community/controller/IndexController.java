@@ -1,13 +1,17 @@
 package life.hk.community.controller;
 
+import life.hk.community.dto.PublishDTO;
+import life.hk.community.mapper.PublishMapper;
 import life.hk.community.mapper.UserMapper;
 import life.hk.community.model.User;
+import life.hk.community.service.PublishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * User: gaoyishu
@@ -20,8 +24,13 @@ public class IndexController {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private PublishService publishService;
+
     @GetMapping("/")
-    public String index(HttpServletRequest request){
+    // 先检查登录状态
+    public String index(HttpServletRequest request,
+                        Model model){
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length != 0)
@@ -35,6 +44,9 @@ public class IndexController {
                     break;
                 }
             }
+
+        List<PublishDTO> publishDTOList = publishService.list();
+        model.addAttribute("publishes",publishDTOList);
         return "index";
     }
 }
