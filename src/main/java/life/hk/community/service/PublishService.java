@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * @author gaoyishu
  * @date 2019/12/25 18:15
+ * service 页面和服务器数据交互层
  **/
 
 @Service
