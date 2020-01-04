@@ -3,6 +3,7 @@ package life.hk.community.mapper;
 import life.hk.community.model.Publish;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public interface PublishMapper {
     void create(Publish publish);
 
 
-    @Select("select *from publish")
-    List<Publish> list();
+    @Select("select *from publish limit #{offset},#{size}")
+    List<Publish> list(@Param(value = "offset") Integer offset, @Param(value = "size") Integer size);
+
+    @Select("select count(1) from publish;")
+    Integer count();
 }

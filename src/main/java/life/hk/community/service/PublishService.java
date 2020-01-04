@@ -1,5 +1,6 @@
 package life.hk.community.service;
 
+import life.hk.community.dto.PaginationDTO;
 import life.hk.community.dto.PublishDTO;
 import life.hk.community.mapper.PublishMapper;
 import life.hk.community.mapper.UserMapper;
@@ -28,10 +29,26 @@ public class PublishService {
     private UserMapper userMapper;
 
 
-    public List<PublishDTO> list() {
+    public PaginationDTO list(Integer page, Integer size) {
 
-        List<Publish> publishes = publishMapper.list();
+
+        PaginationDTO paginationDTO = new PaginationDTO();
+        Integer totalCount = publishMapper.count();
+        paginationDTO.setPagination(totalCount, page, size);
+
+        if (page < 1) {
+            page = 1;
+        }
+        if (page > paginationDTO.getTotalPage()) {
+            page = paginationDTO.getTotalPage();
+        }
+
+        // size*(page-1)
+
+        Integer offset = size * (page - 1);
+        List<Publish> publishes = publishMapper.list(offset, size);
         List<PublishDTO> publishDTOList = new ArrayList<>();
+
         for (Publish publish : publishes) {
             User user = userMapper.findById(publish.getCreator());
             PublishDTO publishDTO = new PublishDTO();
@@ -39,6 +56,7 @@ public class PublishService {
             publishDTO.setUser(user);
             publishDTOList.add(publishDTO);
         }
-        return publishDTOList;
+        paginationDTO.setPublishDTOS(publishDTOList);
+        return paginationDTO;
     }
 }

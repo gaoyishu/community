@@ -1,5 +1,6 @@
 package life.hk.community.controller;
 
+import life.hk.community.dto.PaginationDTO;
 import life.hk.community.dto.PublishDTO;
 import life.hk.community.mapper.PublishMapper;
 import life.hk.community.mapper.UserMapper;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -30,7 +33,10 @@ public class IndexController {
     @GetMapping("/")
     // 先检查登录状态
     public String index(HttpServletRequest request,
-                        Model model){
+                        Model model,
+                        @RequestParam(name = "page", defaultValue = "1") Integer page,
+                        @RequestParam(name = "size", defaultValue = "12") Integer size
+    ) {
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length != 0)
@@ -45,8 +51,8 @@ public class IndexController {
                 }
             }
 
-        List<PublishDTO> publishDTOList = publishService.list();
-        model.addAttribute("publishes",publishDTOList);
+        PaginationDTO pagination = publishService.list(page,size);
+        model.addAttribute("pagination", pagination);
         return "index";
     }
 }
