@@ -25,4 +25,7 @@ public interface PublishMapper {
 
     @Select("select count(1) from publish;")
     Integer count();
+
+    @Select("select *from publish while creator = #{userId} limit #{offset},#{size}")
+    List<Publish> list(@Param("userId") Integer userId, @Param(value = "offset") Integer offset, @Param(value = "size") Integer size);
 }
