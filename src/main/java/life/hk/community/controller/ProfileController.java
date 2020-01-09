@@ -1,5 +1,6 @@
 package life.hk.community.controller;
 
+import life.hk.community.dto.PaginationDTO;
 import life.hk.community.mapper.UserMapper;
 import life.hk.community.model.User;
 import life.hk.community.service.PublishService;
@@ -59,7 +60,9 @@ public class ProfileController {
             model.addAttribute("sectionName", "最新回复");
         }
 
-        publishService.list(user.getId(), page, size);
+        PaginationDTO paginationDTO = publishService.list(user.getId(), page, size);
+
+        model.addAttribute("pagination", paginationDTO);
         return "profile";
     }
 }

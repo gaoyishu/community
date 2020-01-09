@@ -20,12 +20,15 @@ public interface PublishMapper {
     void create(Publish publish);
 
 
-    @Select("select *from publish limit #{offset},#{size}")
+    @Select("select * from publish limit #{offset},#{size}")
     List<Publish> list(@Param(value = "offset") Integer offset, @Param(value = "size") Integer size);
 
-    @Select("select count(1) from publish;")
+    @Select("select count(1) from publish")
     Integer count();
 
-    @Select("select *from publish while creator = #{userId} limit #{offset},#{size}")
-    List<Publish> list(@Param("userId") Integer userId, @Param(value = "offset") Integer offset, @Param(value = "size") Integer size);
+    @Select("select * from publish where creator = #{userId} limit #{offset},#{size}")
+    List<Publish> listByUserId(@Param("userId") Integer userId, @Param(value = "offset") Integer offset, @Param(value = "size") Integer size);
+
+    @Select("select count(1) from publish where creator = #{userId}")
+    Integer countByUserId(@Param("userId") Integer userId);
 }

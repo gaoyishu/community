@@ -62,7 +62,7 @@ public class PublishService {
 
     public PaginationDTO list(Integer userId, Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
-        Integer totalCount = publishMapper.count();
+        Integer totalCount = publishMapper.countByUserId(userId);
         paginationDTO.setPagination(totalCount, page, size);
 
         if (page < 1) {
@@ -75,7 +75,7 @@ public class PublishService {
         // size*(page-1)
 
         Integer offset = size * (page - 1);
-        List<Publish> publishes = publishMapper.list(userId.offset, size);
+        List<Publish> publishes = publishMapper.listByUserId(userId,offset, size);
         List<PublishDTO> publishDTOList = new ArrayList<>();
 
         for (Publish publish : publishes) {
@@ -87,6 +87,5 @@ public class PublishService {
         }
         paginationDTO.setPublishDTOS(publishDTOList);
         return paginationDTO;
-    }
     }
 }
