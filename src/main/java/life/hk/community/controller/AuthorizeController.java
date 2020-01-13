@@ -1,7 +1,7 @@
 package life.hk.community.controller;
 
 import life.hk.community.dto.AccessTokenDTO;
-import life.hk.community.dto.GithubUser;
+import life.hk.community.model.UserInfo;
 import life.hk.community.mapper.UserMapper;
 import life.hk.community.model.User;
 import life.hk.community.provider.GithubProvider;
@@ -53,16 +53,16 @@ public class AuthorizeController {
         accessTokenDTO.setState(state);
         accessTokenDTO.setClient_secret(clientSecret);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
-        GithubUser githubUser = githubProvider.getUser(accessToken);
-        if (githubUser != null && githubUser.getId() != null){
+        UserInfo userInfo = githubProvider.getUser(accessToken);
+        if (userInfo != null && userInfo.getId() != null){
             User user = new User();
             String token = UUID.randomUUID().toString();
             user.setToken(token);
-            user.setName(githubUser.getName());
-            user.setAccountId(String.valueOf(githubUser.getId()));
+            user.setName(userInfo.getName());
+            user.setAccountId(String.valueOf(userInfo.getId()));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
-            user.setAvatarUrl(githubUser.getAvatar_url());
+            user.setAvatarUrl(userInfo.getAvatar_url());
             userMapper.insert(user);
             response.addCookie(new Cookie("token",token));
 
