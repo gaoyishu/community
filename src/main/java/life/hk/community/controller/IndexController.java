@@ -31,7 +31,7 @@ public class IndexController {
     @Autowired
     private PublishService publishService;
 
-    @GetMapping("/")
+    @GetMapping({"/","/index"})
     // 先检查登录状态
     public String index(HttpServletRequest request,
                         Model model,
@@ -55,6 +55,11 @@ public class IndexController {
         PaginationDTO pagination = publishService.list(page,size);
         model.addAttribute("pagination", pagination);
         return "index";
+    }
+
+    @GetMapping("/login")
+    public String login(){
+        return "login";
     }
 
 
