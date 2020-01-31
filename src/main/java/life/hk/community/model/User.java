@@ -1,20 +1,70 @@
 package life.hk.community.model;
 
+
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
- * User: gaoyishu
- * Date: 2019/11/23
- * Time: 17:41
- */
+ * @author gaoyishu
+ * @date 2020/1/20 16:24
+ **/
 
+@Component
 @Data
-public class User {
-    private Integer id;
+public class User implements UserDetails {
+    private int id;
     private String name;
-    private String accountId;
-    private String token;
+    private String username;
+    private String password;
+    private String roles;
+    private String wechatAccount;
     private Long gmtCreate;
     private Long gmtModified;
-    private String avatarUrl;
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        String[] authorities = roles.split(",");
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        for (String role:authorities){
+            simpleGrantedAuthorities.add(new SimpleGrantedAuthority(role));
+        }
+        return simpleGrantedAuthorities;
+    }
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

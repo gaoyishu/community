@@ -1,21 +1,20 @@
 package life.hk.community.controller;
 
 import life.hk.community.dto.PaginationDTO;
-import life.hk.community.dto.PublishDTO;
-import life.hk.community.mapper.PublishMapper;
 import life.hk.community.mapper.UserMapper;
-import life.hk.community.model.User;
 import life.hk.community.service.PublishService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * User: gaoyishu
@@ -31,26 +30,16 @@ public class IndexController {
     @Autowired
     private PublishService publishService;
 
-    @GetMapping({"/","/index"})
+    @GetMapping("/")
     // 先检查登录状态
-    public String index(HttpServletRequest request,
-                        Model model,
+    public String index(Model model,
                         @RequestParam(name = "page", defaultValue = "1") Integer page,
                         @RequestParam(name = "size", defaultValue = "12") Integer size
     ) {
-
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length != 0)
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Collection<GrantedAuthority> authorityCollection = (Collection<GrantedAuthority>) auth.getAuthorities();
+        model.addAttribute("authorities", authorityCollection.toString());
+        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
 
         PaginationDTO pagination = publishService.list(page,size);
         model.addAttribute("pagination", pagination);
